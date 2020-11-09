@@ -16,6 +16,8 @@
 
 - časovač nastavený na 999 znamená, že ak počítadlo napočíta do 999, nastane prerušenie (update event) a počítadlo začne počítať od 0 (ak počítame nahor - up-counting)
 
+### PWM - pulse width modulation
+
 # Konfigurácia prevodníka (ADC1)
 
 <p align="center">
