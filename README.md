@@ -28,20 +28,6 @@
 - pulse_length = ((TIMx_ARR) * DutyCycle) / 100  (hodnota zapisovaná do TIMx_CCRx)
 
 
-# Konfigurácia prevodníka (ADC1)
-
-<p align="center">
-    <img src="https://github.com/VRS-Predmet/vrs_cvicenie_10/blob/master/images/adc_config.PNG" width="800">
-</p>
-
-- využivaný ADC prevodník ma nastavené 12bit rozlíšenie
-- prevod je spúšťaný programom a pri každom spustení sa prevod vykoná len raz (single channel, single conversion mode)
-- prevedená hodnota je uložená do registra "DR" - data register
-- okrem tohto režimu je možné ADC prevodník využívať v kopec ďalších v závislosti od aplikácie
-
-- signál určený na prevod je privedený na GPIO pin PA0 (A0)
-
-
 # Zadanie
 Vytvorte frimware pre MCU, ktorý bude vypínať a zapínať LED spôsobom pripomínajúcim "fade in" a "fade out" efekt. Program bude mať dva módy - manuálny a automatický. V manuálnom móde bude LED plynule a autoamticky prechádzať medzi stavmi "ON" a "OFF". To znamená, že ak je LED na začiatku v stave "ON", tak sa intenzita jej svietenia začne pomaly zmenšovať až do momentu, pokiaľ nezhasne. Keď LED zhasne (teda je v stave OFF), tak sa začne postupne rozsvecovať. V manuálnom móde bude možné nastavovať intenzitu svietenia LED prostredníctvom terminálu z PC pričom prechod z jednej intenzity svietenia na druhú musí byť plynulý. Prepínanie medzi manuálnym a automatickým módom bude taktiež ovládateľne prostredníctvom terminálu z PC.
 
