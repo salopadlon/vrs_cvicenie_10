@@ -25,7 +25,7 @@
 - Duty cycle (strieda) - pomer dĺžky trvania aktívneho stavu signálu a jeho dĺžky periódy
 - pre nastavenie "duty cycle" slúži capture/compare register (TIMx_CCRx)
 
-- pulse_length = ((TIM_Counter) * DutyCycle) / 100  (hodnota zapisovaná do TIMx_CCRx)
+- pulse_length = ((TIMx_ARR) * DutyCycle) / 100  (hodnota zapisovaná do TIMx_CCRx)
 
 
 # Konfigurácia prevodníka (ADC1)
