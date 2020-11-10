@@ -18,6 +18,16 @@
 
 ### PWM - pulse width modulation
 
+<p align="center">
+    <img src="https://github.com/VRS-Predmet/vrs_cvicenie_10/blob/zadanie_cv10/images/pwm-output-mode.jpg" width="700">
+</p>
+
+- Duty cycle (strieda) - pomer dĺžky trvania aktívneho stavu signálu a jeho dĺžky periódy
+- pre nastavenie "duty cycle" slúži capture/compare register (TIMx_CCRx)
+
+- pulse_length = ((TIM_Counter) * DutyCycle) / 100  (hodnota zapisovaná do TIMx_CCRx)
+
+
 # Konfigurácia prevodníka (ADC1)
 
 <p align="center">
