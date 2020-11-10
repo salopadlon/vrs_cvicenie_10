@@ -1,6 +1,6 @@
 # Náplň cvičenia
 - zoznámenie sa s časovačom (TIM)
-- zoznámenie sa s analógovo digitálnym prevodníkom (ADC)
+
 
 # Konfigurácia časovača (TIM3)
 
@@ -26,6 +26,8 @@
 - pre nastavenie "duty cycle" slúži capture/compare register (TIMx_CCRx)
 
 - pulse_length = ((TIMx_ARR) * DutyCycle) / 100  (hodnota zapisovaná do TIMx_CCRx)
+
+- Balik obsahujuci knižnice, middleware, príklady ... : https://www.st.com/en/embedded-software/stm32cubef3.html
 
 
 # Zadanie
