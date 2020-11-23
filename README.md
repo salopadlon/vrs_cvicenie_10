@@ -1,53 +1,60 @@
 # Náplň cvičenia
-- zoznámenie sa s časovačom (TIM)
+- zoznámenie sa s perifériou DMA
+- prenos dát s USART a DMA
 
+# USART a DMA
 
-# Konfigurácia časovača (TIM3)
+- v ukážkovom programe sa na komunikáciu využíva periféria USART spolu s DMA (Direct Memory Access)
+- predvedené sú dva spôsoby prenosu dát s DMA - polling, interrupts
 
-<p align="center">
-    <img src="https://github.com/VRS-Predmet/vrs_cvicenie_10/blob/master/images/tim_config.PNG" width="800">
-</p>
-
-- timer 3 využiva interný zdroj hodín čo je v tomto prípade 8MHz
-
-- v projekte je TIM3 využitý na generovanie prerušenia v pravidelnom časovom intervale a preto je dôležité správne nastavenie počítadla a predeličky (prescaler)
-
-- predelička nastavená na 7999 znamená, že počítadlo časovača bude inkrementované každú milisekundu (znížil som frekvenciu inkrementovania počítadla z 8MHz na 1kHz)
-
-- časovač nastavený na 999 znamená, že ak počítadlo napočíta do 999, nastane prerušenie (update event) a počítadlo začne počítať od 0 (ak počítame nahor - up-counting)
-
-### PWM - pulse width modulation
+- podľa nastavenia makra "POLLING" na "1" alebo "0" sa bude využívať jeden z uvedených spôsobov prenosu dát (makro sa nastavuje vo vlastnosťiach projektu, project->properties)
 
 <p align="center">
-    <img src="https://github.com/VRS-Predmet/vrs_cvicenie_10/blob/zadanie_cv10/images/pwm-output-mode.jpg" width="700">
+    <img src="https://github.com/VRS-Predmet/vrs_cvicenie_7/blob/master/images/nastavenie_makra.PNG" width="750">
 </p>
 
-- Duty cycle (strieda) - pomer dĺžky trvania aktívneho stavu signálu a jeho dĺžky periódy
-- pre nastavenie "duty cycle" slúži capture/compare register (TIMx_CCRx)
+### Polling
+- pri tomto spôsobe využívania DMA je v hlavnej slučke programu potrebné volať funkciu, ktorá zistí, či boli prijaté dáta a zabezpečí ich rýchle spracovanie
+- funkcia musí byť vyvolávaná periodicky a dostatočne rýchlo, aby sa predišlo strate dát
 
-- pulse_length = ((TIMx_ARR) * DutyCycle) / 100  (hodnota zapisovaná do TIMx_CCRx)
+### Interrupts
+- namiesto neustáleho vyvolávania funkcie na spracovanie prijatých dát sú využité 3 zdroje prerušenia - 2x od DMA, 1x od USART
+- takto je funkcia na spracovanie dát vyvolaná len vtedy, ak je to potrebné
+- prerušenia od DMA - HT(half transfer) a TC(transfer complete)
+- prerušenie od USART - IDLE - ak sa zastaví komunikácia po zbernici, po uplinutí času potrebného na prenos jedného znaku sa vyvolá prerušenie
 
-- Balik obsahujuci knižnice, middleware, príklady ... : https://www.st.com/en/embedded-software/stm32cubef3.html
+### Konfigurácia DMA
+- prenos dát s DMA je nastavený na Rx aj Tx pričom Rx má rozdielnu konfiguráciu ako Tx
+- smerovanie prenosu dát - periféria -> pamäť pri Rx, pamäť -> periféria pri Tx
+- pri Rx sa ukladajú dáta do vyhradenej pamäti, do ktorej sa zapisuje "kruhovo" (circular mode) - ak sa naplní celé pamäťové miesto, ďalšie dáta sa začnú zapisovať na jeho začiatok a staré sa prepíšu
+- pri Tx sa využije normálny mód (normal mode), to znamená, že keď sa dojde na koniec pamäťového miesta, prenos dáť sa ukončí
+
+<p align="center">
+    <img src="https://github.com/VRS-Predmet/vrs_cvicenie_7/blob/master/images/dma_config1.PNG" width="650">
+</p>
+
+- konfigurácia USART2 sa nelíši od konfigurácie z predchádzajúceho cvičenia
+- V NVIC je potrebné povoliť prerušenia pre DMA(všetky používané kanály) aj USART2
+
+- v ukážkovom kóde je navyše ku vygenerovanému kódu ešte doplňené povolenie konkrétnych prerušení pre DMA a USART (IDLE, HT, TC), priradenie pamäťového miesta pre príjem dát a samotné zapnutie DMA pre obsluhu USART2 Rx a Tx
 
 
 # Zadanie
-Vytvorte frimware pre MCU, ktorý bude vypínať a zapínať LED spôsobom pripomínajúcim "fade in" a "fade out" efekt. Program bude mať dva módy - manuálny a automatický. V manuálnom móde bude LED plynule a autoamticky prechádzať medzi stavmi "ON" a "OFF". To znamená, že ak je LED na začiatku v stave "ON", tak sa intenzita jej svietenia začne pomaly zmenšovať až do momentu, pokiaľ nezhasne. Keď LED zhasne (teda je v stave OFF), tak sa začne postupne rozsvecovať. V manuálnom móde bude možné nastavovať intenzitu svietenia LED prostredníctvom terminálu z PC pričom prechod z jednej intenzity svietenia na druhú musí byť plynulý. Prepínanie medzi manuálnym a automatickým módom bude taktiež ovládateľne prostredníctvom terminálu z PC.
+- Doimplemetovať chýbajúce častí šablóny programu, vďaka ktorému bude MCU komunikovať s PC prostredníctvom USART2 s využitím DMA.
+- Okrem spracovania prijatých dát bude program pravidelne posielať informácie o aktuálnom vyťažení pamäte, ktorú využíva DMA pre dáta prijaté cez USART.
+- USART komunikácia je obsluhovaná pomocou prerušní HT, TC, IDLE. 
+- K vypracovaniu zadania nie je potrebný žiaden dodatočný HW.
 
-### Úlohy
-1. Vytvoriť nový projekt, v ktorom nakonfigurujete periférie nevyhnutné pre toto zadanie.
-
-2. Nakonfigurovať perifériu USART2 tak, aby bola umožnená komunikácia medzi PC a MCU. Pre nastavenie USART2 využite rovnaké hodnoty parametrov (baud rate, length, stop bits ...) ako z predošlého zadania (zadanie_cv7). Nakonfigurujte DMA tak, aby bola využívaná perifériou USART2 na príjem a odosielanie dát. Príjem a odosielanie dát budú obslúžené v prerušení, tak ako to bolo v predošlom zadaní (zadanie_cv7).
-
-3. Pre prepínanie medzi manuálnym a automatickým módom budú slúžiť príkazy "manual" a "auto". Na to, aby bol príkaz zo strany MCU prijatý sa musí začínať a končiť znakom "$".  V manuálnom režime bude pre nastavenie intezity svietenia LED slúžiť príkaz "PWMxx", kde "xx" predstavuje číslo v rozsahu 0 - 99. Napríklad "PWM05" alebo "PWM48". Taktiež platí, že sa príkaz musi začínať a končiť znakom "$". Ak chcem napríklad v manuálnom režime nastaviť, aby LED svietila na 50%, tak najprv bude nutné z termínálu zaslať príkaz "$manual$" a následne zaslať príkaz "$PWM50$".
-
-4. Nakonfigurovať časovač TIM2 tak, aby generoval PWM signál, ktorý bude vyvedený na GPIOA-5. Vyberte vhodný kanál časovača, ktorý je na daný pin vyvedený. Predeličku a počítadlo časovača nastavte tak, aby frekvencia PWM signálu bola 100Hz.
-
-5. Vytvoriť funkciu, pomocou ktorej bude možné meniť šírku PWM signálu počas behu programu. Deklarácia funkcie bude vyzerať následovne - "void setDutyCycle(uint8_t D)". Funkcia nemá žiadnu návratovú hodnotu. Vstupným parametrom je číslo, duty cycle, v rozpätí 0 - 99.
-
-6. Nakonfigurovať časovač TIM 2 tak, aby dokázal generovať prerušenie v pravidelnom časovom intervale. V obsluhe prerušenia od časovača sa bude aktualizovať hodnota šírky PWM signálu pomocou funkcie z bodu 6. Vyberte vhodný kanál časovača pre daný účel. Predeličku a počítadlo časovača nastavte tak, aby sa prerušenie generovalo každých 10ms. 
-
-7. LED, ktorej intenzita svietenia sa bude ovládať, bude pripojená ku GPIOA-5, na ktorý je vyvedený PWM signál od časovača TIM2.
-
-8. Automatický režim - LED sa počas jednej sekundy plynulo dostane zo stavu "ON" do stavu "OFF". Počas nasledujúcej sekundy sa plynulo dostane zo stavu "OFF" do stavu "ON". To znamená, že LED sa bude postupne rozsvecovať a následne postupne zhasovať. Perióda blikania LED je teda 2s -> 1s na zhasnutie a 1s na rozsvietenie LED.
-
-9. Manuálny režim - Intenzita svietenia LED je ovládaná prikazmi z PC. Prechod medzi novou žiadanou intenzitou a aktuálnou intenzitou svietenia musí byť plynulý. Čas pre rozsvietenie LED z 0% na 100% alebo zhasnutie zo 100% na 0% je 1s. To znamená, že ak je intenzita svietenia LED aktuálne nastavená na 50% a nová žiadaná hodnota bude maximálna intezita svietenia (100%), tak plynulý prechod bude trvať 500ms. Z vopred predpísaných hodnôť vychádza, že sa intenzita svietenia mení zo skokom 1% (v manuálnom aj v automatickom režime).
+### Úlohy:
+ 1. Stiahnúť/naklonovať vetvu "zadanie_cv7", ktorá predstavuje šablónu projektu, do ktorej je nutné vypracovať nasledujúce úlohy.
+ 2. Pre svoje zadanie si vtvoriť vlastný github repozitár, kam sa nahraje stiahnutá šablóná.
+ 
+ 3. V súbore "Src/usart.c" doplniť konfiguráciu DMA a USART periferie.
+ 
+ 4. V subore "Src/usart.c" implementovať funkciu pre obsluhu prijimania dát od USART s DMA - "USART2_CheckDmaReception". Funkcia musí správne obslúžiť prijímanie dáť od DMA a ich následné posielanie na spracovanie. Kontrolovať zaplnenosť DMA Rx buffera a zabrániť pretečeniu a strate prijatých dát. Buffer využívaný pre DMA USART Rx sa musí používať v normálnom režime, nie kruhovom. Veľkosť buffera je nastavena na 256 bytov. Predpokladá sa, že vysielacia strana naraz odošle maximálne 20 znakov.
+ 
+ 5. V subore "Src/main.c" implementovať funkciu "proccesDmaData", ktorá spracuje prijatá dáta. Spracovať znamená, že po prijatí súboru znakov vyhodnotí koľko z prijatých znakov boli malé písmená a koľko boli veľké písmená. Každý súbor znakov, ktorý má byť spracovaný sa musí začínať znakom "#" a končiť znakom "$". To znamená, že platný súbor znaokov, pre ktorý sa vyhodnotí počet malých a veľkých písmen bude vyzerať napríklad ako "#Platn15uborZnakov$". Pokiaľ nie je detegovaný štartovací znak "#", funkcia bude prijaté znaky ignorovať. Ak bol prijatý štartovací znak, súbor znakov bude vyhodnotený až po prijatí ukončovacieho znaku "$". Ak po prijatí štartovacieho znaku nabude počas nasledujúcich 35 znakov prijatý ukončovací znak, prijaté dáta sa zahodia a funkcia bude čakať na nový štartovací znak.
+ 
+ 6. V subore "Src/main.c" implementovať periodické odosielanie dát o aktuálnom stave DMA Rx buffera cez USART2 do PC. Formát spravý a frekvencia posielania sú špecifikované inštrukciami v komentáry vo while slučke. Implementácia periodického odoielania môže byť priamo vo while slučke poprípade si môžete vytvoriť vlastnú funkciu, ktorú budete vo while slučke volať. V tomto smere máte voľnú ruku. Podstatné je, aby odosielané dáta boli zobraziteľné v PC pomocou terminálu.
+ 
+ 7. Odovzdáva sa odkaz k vašemu repozitáru.

@@ -8,9 +8,9 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include Startup/subdir.mk
+-include Src/subdir.mk
 -include Drivers/STM32F3xx_HAL_Driver/Src/subdir.mk
--include Core/Startup/subdir.mk
--include Core/Src/subdir.mk
 -include subdir.mk
 -include objects.mk
 
@@ -47,7 +47,7 @@ all: vrs_cv8-9.elf secondary-outputs
 
 # Tool invocations
 vrs_cv8-9.elf: $(OBJS) $(USER_OBJS) C:\Users\psadl\Documents\SCHOOL\VRS\_repo\08\vrs_cvicenie_10\STM32F303K8TX_FLASH.ld
-	arm-none-eabi-gcc -o "vrs_cv8-9.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\psadl\Documents\SCHOOL\VRS\_repo\08\vrs_cvicenie_10\STM32F303K8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="vrs_cv8-9.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+	arm-none-eabi-gcc -o "vrs_cv8-9.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\psadl\Documents\SCHOOL\VRS\_repo\08\vrs_cvicenie_10\STM32F303K8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="vrs_cv8-9.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
