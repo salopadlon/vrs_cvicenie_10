@@ -1,4 +1,4 @@
-Src/usart.o: ../Src/usart.c ../Inc/usart.h ../Inc/main.h \
+Src/tim.o: ../Src/tim.c ../Inc/tim.h ../Inc/main.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_dma.h \
  ../Drivers/CMSIS/Device/ST/STM32F3xx/Include/stm32f3xx.h \
  ../Drivers/CMSIS/Device/ST/STM32F3xx/Include/stm32f303x8.h \
@@ -19,7 +19,7 @@ Src/usart.o: ../Src/usart.c ../Inc/usart.h ../Inc/main.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_usart.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_gpio.h
 
-../Inc/usart.h:
+../Inc/tim.h:
 
 ../Inc/main.h:
 

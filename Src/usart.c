@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
+  * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
   * This software component is licensed by ST under BSD 3-Clause license,
@@ -35,12 +35,8 @@ void USART2_RegisterCallback(void *callback)
 	}
 }
 
-/* Space for global variables, if you need them */
-
-	// type global variables here
-
-
 /* USART2 init function */
+
 void MX_USART2_UART_Init(void)
 {
   LL_USART_InitTypeDef USART_InitStruct = {0};
@@ -48,11 +44,11 @@ void MX_USART2_UART_Init(void)
   LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
   /* Peripheral clock enable */
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART2);
-  
+
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
-  /**USART2 GPIO Configuration  
+  /**USART2 GPIO Configuration
   PA2   ------> USART2_TX
-  PA15   ------> USART2_RX 
+  PA15   ------> USART2_RX
   */
   GPIO_InitStruct.Pin = LL_GPIO_PIN_2|LL_GPIO_PIN_15;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
@@ -68,11 +64,11 @@ void MX_USART2_UART_Init(void)
    * You can use configuration from example program and modify it.
    * For more information about DMA registers, refer to reference manual.
    */
-  
+
   /* USART2_RX Init */
   LL_DMA_SetDataTransferDirection(DMA1, LL_DMA_CHANNEL_6, LL_DMA_DIRECTION_PERIPH_TO_MEMORY);
   LL_DMA_SetChannelPriorityLevel(DMA1, LL_DMA_CHANNEL_6, LL_DMA_PRIORITY_MEDIUM);
-  LL_DMA_SetMode(DMA1, LL_DMA_CHANNEL_6, LL_DMA_MODE_NORMAL);
+  LL_DMA_SetMode(DMA1, LL_DMA_CHANNEL_6, LL_DMA_MODE_CIRCULAR);
   LL_DMA_SetPeriphIncMode(DMA1, LL_DMA_CHANNEL_6, LL_DMA_PERIPH_NOINCREMENT);
   LL_DMA_SetMemoryIncMode(DMA1, LL_DMA_CHANNEL_6, LL_DMA_MEMORY_INCREMENT);
   LL_DMA_SetPeriphSize(DMA1, LL_DMA_CHANNEL_6, LL_DMA_PDATAALIGN_BYTE);
@@ -129,11 +125,7 @@ void MX_USART2_UART_Init(void)
   LL_USART_ConfigAsyncMode(USART2);
   LL_USART_Enable(USART2);
 
-  /* Enable USART2 peripheral and interrupts*/
-
-  	  //type your code here:
 }
-
 
 // Send data stored in buffer with DMA
 void USART2_PutBuffer(uint8_t *buffer, uint8_t length)
@@ -162,15 +154,18 @@ void USART2_CheckDmaReception(void)
 
 	uint16_t pos = DMA_USART2_BUFFER_SIZE - LL_DMA_GetDataLength(DMA1, LL_DMA_CHANNEL_6);
 
-	if (pos != old_pos) {
-		if (pos > old_pos) {
+	if (pos != old_pos)
+	{
+		if (pos > old_pos)
+		{
 			USART2_ProcessData(&bufferUSART2dma[old_pos], pos - old_pos);
 		}
-
-		else {
+		else
+		{
 			USART2_ProcessData(&bufferUSART2dma[old_pos], DMA_USART2_BUFFER_SIZE - old_pos);
 
-			if (pos > 0) {
+			if (pos > 0)
+			{
 				USART2_ProcessData(&bufferUSART2dma[0], pos);
 			}
 		}
@@ -178,10 +173,10 @@ void USART2_CheckDmaReception(void)
 
 	old_pos = pos;
 
-	if (old_pos == DMA_USART2_BUFFER_SIZE) return;
+	if (old_pos == DMA_USART2_BUFFER_SIZE)
+	{
+		old_pos = 0;
+	}
 }
-
-
-
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
