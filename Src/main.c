@@ -53,6 +53,7 @@
 void SystemClock_Config(void);
 void proccesDmaData(uint8_t* sign, uint16_t len);
 void setDutyCycle(uint8_t D);
+MODE getMode();
 
 /* Private user code ---------------------------------------------------------*/
 uint8_t tx_data[128];
@@ -223,6 +224,12 @@ void setDutyCycle(uint8_t D)
 {
 	uint8_t pulse_length = ((TIM2->ARR) * D) / 100;
 	TIM2->CCR1 = pulse_length;
+}
+
+MODE getMode()
+{
+	if (mode) return MANUAL;
+	else return AUTO;
 }
 
 /**

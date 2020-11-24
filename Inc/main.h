@@ -51,9 +51,7 @@ extern "C" {
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
-/* USER CODE BEGIN ET */
-
-/* USER CODE END ET */
+typedef enum {AUTO = 0, MANUAL = 1} MODE;
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
@@ -69,6 +67,7 @@ extern "C" {
 void Error_Handler(void);
 void proccesDmaData(uint8_t* sign, uint16_t len);
 void setDutyCycle(uint8_t D);
+MODE getMode();
 
 /* Private defines -----------------------------------------------------------*/
 #ifndef NVIC_PRIORITYGROUP_0

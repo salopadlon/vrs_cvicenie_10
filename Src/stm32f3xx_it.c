@@ -233,15 +233,19 @@ void DMA1_Channel7_IRQHandler(void)
 void TIM2_IRQHandler(void)
 {
 	if (LL_TIM_IsActiveFlag_UPDATE(TIM2)){
-		if (count_up) {
-			setDutyCycle(value++);
-			if (value >= MAX_VALUE) count_up = 0;
+
+		if (getMode() == AUTO) {
+			if (count_up) {
+				setDutyCycle(value++);
+				if (value >= MAX_VALUE) count_up = 0;
+			}
+
+			else {
+				setDutyCycle(value--);
+				if (value <= MIN_VALUE) count_up = 1;
+			}
 		}
 
-		else {
-			setDutyCycle(value--);
-			if (value <= MIN_VALUE) count_up = 1;
-		}
 	}
 	LL_TIM_ClearFlag_UPDATE(TIM2);
 
