@@ -116,6 +116,8 @@ int main(void)
 			  DMA_USART2_BUFFER_SIZE, occupied_memory, load, mode_string);
 	  USART2_PutBuffer(tx_data, sizeof(tx_data));
 
+	  setDutyCycle(50);
+
 	  LL_mDelay(2000);
   }
   /* USER CODE END 3 */
@@ -161,7 +163,7 @@ void proccesDmaData(uint8_t* sign, uint16_t len)
 	static char string[STRING_SIZE], pwm_string[3];
 	static uint8_t it = 0, it2 = 0, pwm_value;
 
-	for(uint8_t i = 0; i < len; i++) {
+	for (uint8_t i = 0; i < len; i++) {
 		if (*(sign+i) == '$') {
 			start = 1;
 		}
@@ -195,7 +197,7 @@ void proccesDmaData(uint8_t* sign, uint16_t len)
 
 					if (it2 == 2 && *(sign+i) == '$') {
 						sscanf(pwm_string, "%d", &pwm_value);
-						setDutyCycle(pwm_value);
+//						setDutyCycle(pwm_value);
 						start = 0; get_pwm_value = 0;
 						for(uint8_t i = 0; i < STRING_SIZE; i++) string[i] = 0;
 						for(uint8_t i = 0; i < 3; i++) pwm_string[i] = 0;
@@ -209,7 +211,7 @@ void proccesDmaData(uint8_t* sign, uint16_t len)
 			}
 		}
 
-		else for(uint8_t i = 0; i < STRING_SIZE; i++) string[i] = 0;
+		else for (uint8_t i = 0; i < STRING_SIZE; i++) string[i] = 0;
 	}
 
 }

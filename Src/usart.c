@@ -20,7 +20,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "usart.h"
 
-/* Memory buffer used directly by DMA for USART Rx*/
 uint8_t bufferUSART2dma[DMA_USART2_BUFFER_SIZE];
 
 /* Declaration and initialization of callback function */

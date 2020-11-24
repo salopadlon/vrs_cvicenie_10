@@ -82,10 +82,9 @@ void setDutyCycle(uint8_t D);
                                                                  1 bit  for subpriority */
 #define NVIC_PRIORITYGROUP_4         ((uint32_t)0x00000003) /*!< 4 bits for pre-emption priority,
                                                                  0 bit  for subpriority */
+#endif
 #define STRING_SIZE 8
 #define TX_DATA_SIZE 256
-
-#endif
 
 #ifdef __cplusplus
 }
