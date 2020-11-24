@@ -14,12 +14,10 @@ stm32f3xx_ll_system.h:1634:22:LL_FLASH_SetLatency	16	static
 stm32f3xx_ll_system.h:1647:26:LL_FLASH_GetLatency	4	static
 stm32f3xx_ll_cortex.h:260:22:LL_SYSTICK_SetClkSource	16	static
 stm32f3xx_ll_tim.h:1368:22:LL_TIM_EnableCounter	16	static
-stm32f3xx_ll_tim.h:1692:26:LL_TIM_GetAutoReload	16	static
 stm32f3xx_ll_tim.h:1873:22:LL_TIM_CC_EnableChannel	16	static
-stm32f3xx_ll_tim.h:2605:22:LL_TIM_OC_SetCompareCH1	16	static
 stm32f3xx_ll_tim.h:4314:22:LL_TIM_EnableIT_UPDATE	16	static
 main.c:68:5:main	56	static
 main.c:131:6:SystemClock_Config	8	static
 main.c:162:6:proccesDmaData	32	static
 main.c:222:6:setDutyCycle	24	static
-main.c:234:6:Error_Handler	4	static
+main.c:232:6:Error_Handler	4	static

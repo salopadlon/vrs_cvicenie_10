@@ -239,7 +239,7 @@ void TIM2_IRQHandler(void)
 		}
 
 		else {
-			setDutyCycle(value++);
+			setDutyCycle(value--);
 			if (value <= MIN_VALUE) count_up = 1;
 		}
 	}
