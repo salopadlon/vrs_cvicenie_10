@@ -52,12 +52,14 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 void proccesDmaData(uint8_t* sign, uint16_t len);
+void setDutyCycle(uint8_t D);
 
 /* Private user code ---------------------------------------------------------*/
-letter_count_ letters;
 uint8_t tx_data[128];
 uint8_t counter = 0;
-uint8_t go = 0;
+uint8_t mode = 0;  // 0 - auto, 1 - manual
+uint8_t start = 0;
+uint8_t get_pwm_value = 0;
 
 /**
   * @brief  The application entry point.
@@ -105,12 +107,16 @@ int main(void)
   {
 	  uint8_t occupied_memory = DMA_USART2_BUFFER_SIZE - LL_DMA_GetDataLength(DMA1, LL_DMA_CHANNEL_6);
 	  float load = occupied_memory / (float) DMA_USART2_BUFFER_SIZE * 100;
+	  char mode_string[STRING_SIZE];
 
-	  snprintf(tx_data, sizeof(tx_data), "Buffer capacity: %d bytes, occupied memory: %d bytes, load: %.2f %%\n\r",
-			  DMA_USART2_BUFFER_SIZE, occupied_memory, load);
+	  if (mode) strcpy(mode_string, "manual");
+	  else strcpy(mode_string, "auto");
+
+	  snprintf(tx_data, sizeof(tx_data), "Buffer capacity: %d bytes, occupied memory: %d bytes, load: %.2f %%\n\rMode: %s\n\r\n\r",
+			  DMA_USART2_BUFFER_SIZE, occupied_memory, load, mode_string);
 	  USART2_PutBuffer(tx_data, sizeof(tx_data));
 
-	  LL_mDelay(200);
+	  LL_mDelay(2000);
   }
   /* USER CODE END 3 */
 }
@@ -152,40 +158,64 @@ void SystemClock_Config(void)
 
 void proccesDmaData(uint8_t* sign, uint16_t len)
 {
+	static char string[STRING_SIZE], pwm_string[3];
+	static uint8_t it = 0, it2 = 0, pwm_value;
+
 	for(uint8_t i = 0; i < len; i++) {
-		if (*(sign+i) == '#') {
-			go = 1;
-			continue;
+		if (*(sign+i) == '$') {
+			start = 1;
 		}
 
-		if (go) {
-			if (*(sign+i) != '$') {
-				if (++counter >= 35) {
-					letters.capital_letter = 0; letters.small_letter = 0;
-					counter = 0; go = 0;
+	if (start) {
+		string[it++] = *(sign+i);
+
+		if (it >= STRING_SIZE) for(uint8_t i = 0; i < STRING_SIZE; i++) string[i] = 0;
+
+		if (strstr(string, "auto$")) {
+			mode = 0; start = 0;
+			for(uint8_t i = 0; i < STRING_SIZE; i++) string[i] = 0;
+		}
+
+		if (strstr(string, "manual$")) {
+			mode = 1; start = 0;
+			for(uint8_t i = 0; i < STRING_SIZE; i++) string[i] = 0;
+		}
+
+		if (mode) {
+			if (get_pwm_value) {
+				if (it2 >= 3) {
+					for(uint8_t i = 0; i < 3; i++) pwm_string[i] = 0;
 				}
 
-				else {
-					if(*(sign+i) >= 'A' && *(sign+i) <= 'Z') {
-						letters.capital_letter++;
-					}
-
-					if(*(sign+i) >= 'a' && *(sign+i) <= 'z') {
-						letters.small_letter++;
-					}
+				if (it2 == 2 && *(sign+i) != '$') {
+					start = 0; get_pwm_value = 0;
+					for(uint8_t i = 0; i < STRING_SIZE; i++) string[i] = 0;
+					for(uint8_t i = 0; i < 3; i++) pwm_string[i] = 0;
 				}
+
+				if (it2 == 2 && *(sign+i) == '$') {
+					sscanf(pwm_string, "%d", &pwm_value);
+					start = 0; get_pwm_value = 0;
+					for(uint8_t i = 0; i < STRING_SIZE; i++) string[i] = 0;
+					for(uint8_t i = 0; i < 3; i++) pwm_string[i] = 0;
+				}
+
+				if (*(sign+i) >= 0 && *(sign+i) <= 9) pwm_string[it2++] = *(sign+i);
 			}
 
-			else {
-				snprintf(tx_data, sizeof(tx_data), "Capital letters: %d\n\rSmall letters: %d\n\r",
-						letters.capital_letter, letters.small_letter);
-				USART2_PutBuffer(tx_data, sizeof(tx_data));
+			if (strstr(string, "PWM")) get_pwm_value = 1;
 
-				letters.capital_letter = 0; letters.small_letter = 0;
-				go = 0; counter = 0;
-			}
 		}
 	}
+
+	else for(uint8_t i = 0; i < STRING_SIZE; i++) string[i] = 0;
+}
+
+void setDutyCycle(uint8_t D)
+{
+	uint8_t DutyCycle = D;
+	uint8_t pulse_length = ((TIM2->ARR) * DutyCycle) / 100;
+	TIM2->CCR1 = pulse_length;
 }
 
 /**

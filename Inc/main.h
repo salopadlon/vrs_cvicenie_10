@@ -68,6 +68,7 @@ extern "C" {
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 void proccesDmaData(uint8_t* sign, uint16_t len);
+void setDutyCycle(uint8_t D);
 
 /* Private defines -----------------------------------------------------------*/
 #ifndef NVIC_PRIORITYGROUP_0
@@ -81,12 +82,10 @@ void proccesDmaData(uint8_t* sign, uint16_t len);
                                                                  1 bit  for subpriority */
 #define NVIC_PRIORITYGROUP_4         ((uint32_t)0x00000003) /*!< 4 bits for pre-emption priority,
                                                                  0 bit  for subpriority */
+#define STRING_SIZE 8
+#define TX_DATA_SIZE 256
+
 #endif
-typedef struct
-{
-	uint8_t small_letter;
-	uint8_t capital_letter;
-}letter_count_;
 
 #ifdef __cplusplus
 }
