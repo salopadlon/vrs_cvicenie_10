@@ -191,7 +191,7 @@ void proccesDmaData(uint8_t* sign, uint16_t len)
 					}
 
 					if (it2 == 2 && *(sign+i) != '$') {
-						start = 0; get_pwm_value = 0; it2 = 0;
+						start = 0; get_pwm_value = 0; it2 = 0; it = 0;
 						for(uint8_t i = 0; i < STRING_SIZE; i++) string[i] = 0;
 						for(uint8_t i = 0; i < 3; i++) pwm_string[i] = 0;
 					}
@@ -203,7 +203,7 @@ void proccesDmaData(uint8_t* sign, uint16_t len)
 						for(uint8_t i = 0; i < 3; i++) pwm_string[i] = 0;
 					}
 
-					if (*(sign+i) >= 0 && *(sign+i) <= 9) pwm_string[it2++] = *(sign+i);
+					if ((*(sign+i) - '0') >= 0 && (*(sign+i) - '0') <= 9) pwm_string[it2++] = *(sign+i);
 				}
 
 				if (strstr(string, "$PWM")) get_pwm_value = 1;
