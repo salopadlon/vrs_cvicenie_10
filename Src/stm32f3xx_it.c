@@ -43,6 +43,9 @@
 /* Private variables ---------------------------------------------------------*/
 uint8_t value = 0;
 uint8_t count_up = 1;
+uint8_t init = 1;
+uint8_t max_value_man = 0;
+uint8_t min_value_man = 0;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
@@ -235,6 +238,8 @@ void TIM2_IRQHandler(void)
 	if (LL_TIM_IsActiveFlag_UPDATE(TIM2)){
 
 		if (getMode() == AUTO) {
+			if (!init) init = 1;
+
 			if (count_up) {
 				setDutyCycle(value++);
 				if (value >= MAX_VALUE) count_up = 0;
@@ -244,6 +249,16 @@ void TIM2_IRQHandler(void)
 				setDutyCycle(value--);
 				if (value <= MIN_VALUE) count_up = 1;
 			}
+		}
+
+		if (getMode() == MANUAL) {
+			if (init) {
+				max_value_man = getValue();
+				init = 0;
+			}
+
+			if (value < max_value_man) setDutyCycle(value++);
+			if (value > max_value_man) setDutyCycle(value--);
 		}
 
 	}

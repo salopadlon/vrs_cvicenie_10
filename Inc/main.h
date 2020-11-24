@@ -68,6 +68,7 @@ void Error_Handler(void);
 void proccesDmaData(uint8_t* sign, uint16_t len);
 void setDutyCycle(uint8_t D);
 MODE getMode();
+int getValue();
 
 /* Private defines -----------------------------------------------------------*/
 #ifndef NVIC_PRIORITYGROUP_0

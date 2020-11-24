@@ -54,6 +54,7 @@ void SystemClock_Config(void);
 void proccesDmaData(uint8_t* sign, uint16_t len);
 void setDutyCycle(uint8_t D);
 MODE getMode();
+int getValue();
 
 /* Private user code ---------------------------------------------------------*/
 uint8_t tx_data[128];
@@ -61,7 +62,7 @@ uint8_t counter = 0;
 uint8_t mode = 0;  // 0 - auto, 1 - manual
 uint8_t start = 0;
 uint8_t get_pwm_value = 0;
-
+uint8_t pwm_value;
 /**
   * @brief  The application entry point.
   * @retval int
@@ -163,7 +164,7 @@ void SystemClock_Config(void)
 void proccesDmaData(uint8_t* sign, uint16_t len)
 {
 	static char string[STRING_SIZE], pwm_string[3];
-	static uint8_t it = 0, it2 = 0, pwm_value;
+	static uint8_t it = 0, it2 = 0;
 
 	for (uint8_t i = 0; i < len; i++) {
 		if (*(sign+i) == '$') {
@@ -230,6 +231,11 @@ MODE getMode()
 {
 	if (mode) return MANUAL;
 	else return AUTO;
+}
+
+int getValue()
+{
+	return pwm_value;
 }
 
 /**
