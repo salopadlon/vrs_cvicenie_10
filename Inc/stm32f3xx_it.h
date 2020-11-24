@@ -42,7 +42,7 @@
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
-#define MAX_VALUE 100
+#define MAX_VALUE 99
 #define MIN_VALUE 0
 
 /* Exported functions prototypes ---------------------------------------------*/
