@@ -2697,7 +2697,7 @@ OUTPUT(vrs_cv8-9.elf elf32-littlearm)
  .debug_line    0x00000000000053bf      0x856 Src/usart.o
  .debug_line    0x0000000000005c15       0x81 Startup/startup_stm32f303k8tx.o
 
-.debug_str      0x0000000000000000    0x78014
+.debug_str      0x0000000000000000    0x78013
  .debug_str     0x0000000000000000    0x64686 Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_ll_gpio.o
                                       0x64837 (size before relaxing)
  .debug_str     0x0000000000064686     0x27eb Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_ll_rcc.o
@@ -2714,17 +2714,17 @@ OUTPUT(vrs_cv8-9.elf elf32-littlearm)
                                       0x6ed95 (size before relaxing)
  .debug_str     0x0000000000072f3c     0x4531 Src/main.o
                                       0x735ce (size before relaxing)
- .debug_str     0x000000000007746d      0x26a Src/stm32f3xx_it.o
-                                      0x6f048 (size before relaxing)
- .debug_str     0x00000000000776d7      0x4b9 Src/sysmem.o
+ .debug_str     0x000000000007746d      0x269 Src/stm32f3xx_it.o
+                                      0x6f047 (size before relaxing)
+ .debug_str     0x00000000000776d6      0x4b9 Src/sysmem.o
                                        0x7bb3 (size before relaxing)
- .debug_str     0x0000000000077b90       0x64 Src/system_stm32f3xx.o
+ .debug_str     0x0000000000077b8f       0x64 Src/system_stm32f3xx.o
                                       0x634dd (size before relaxing)
- .debug_str     0x0000000000077bf4       0xd0 Src/tim.o
+ .debug_str     0x0000000000077bf3       0xd0 Src/tim.o
                                       0x6f49e (size before relaxing)
- .debug_str     0x0000000000077cc4      0x31f Src/usart.o
+ .debug_str     0x0000000000077cc3      0x31f Src/usart.o
                                       0x6f67b (size before relaxing)
- .debug_str     0x0000000000077fe3       0x31 Startup/startup_stm32f303k8tx.o
+ .debug_str     0x0000000000077fe2       0x31 Startup/startup_stm32f303k8tx.o
                                          0x74 (size before relaxing)
 
 .comment        0x0000000000000000       0x7b
