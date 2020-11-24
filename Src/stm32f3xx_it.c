@@ -41,9 +41,8 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
+uint8_t value = 0;
+uint8_t count_up = 1;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
@@ -233,12 +232,19 @@ void DMA1_Channel7_IRQHandler(void)
   */
 void TIM2_IRQHandler(void)
 {
-  /* USER CODE BEGIN TIM2_IRQn 0 */
+	if (LL_TIM_IsActiveFlag_UPDATE(TIM2)){
+		if (count_up) {
+			setDutyCycle(value++);
+			if (value >= MAX_VALUE) count_up = 0;
+		}
 
-  /* USER CODE END TIM2_IRQn 0 */
-  /* USER CODE BEGIN TIM2_IRQn 1 */
+		else {
+			setDutyCycle(value++);
+			if (value <= MIN_VALUE) count_up = 1;
+		}
+	}
+	LL_TIM_ClearFlag_UPDATE(TIM2);
 
-  /* USER CODE END TIM2_IRQn 1 */
 }
 
 /**

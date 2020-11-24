@@ -100,6 +100,9 @@ int main(void)
   MX_TIM2_Init();
 
   USART2_RegisterCallback(proccesDmaData);
+  LL_TIM_CC_EnableChannel(TIM2, LL_TIM_CHANNEL_CH1);
+  LL_TIM_EnableIT_UPDATE(TIM2);
+  LL_TIM_EnableCounter(TIM2);
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -115,8 +118,6 @@ int main(void)
 	  snprintf(tx_data, sizeof(tx_data), "Buffer capacity: %d bytes, occupied memory: %d bytes, load: %.2f %%\n\rMode: %s\n\r\n\r",
 			  DMA_USART2_BUFFER_SIZE, occupied_memory, load, mode_string);
 	  USART2_PutBuffer(tx_data, sizeof(tx_data));
-
-	  setDutyCycle(50);
 
 	  LL_mDelay(2000);
   }
@@ -171,17 +172,17 @@ void proccesDmaData(uint8_t* sign, uint16_t len)
 		if (start) {
 			string[it++] = *(sign+i);
 
+			if (strstr(string, "$auto$")) {
+				mode = 0; start = 0; it = 0;
+				for(uint8_t i = 0; i < STRING_SIZE; i++) string[i] = 0;
+			}
+
+			if (strstr(string, "$manual$")) {
+				mode = 1; start = 0; it = 0;
+				for(uint8_t i = 0; i < STRING_SIZE; i++) string[i] = 0;
+			}
+
 			if (it >= STRING_SIZE) for(uint8_t i = 0; i < STRING_SIZE; i++) string[i] = 0;
-
-			if (strstr(string, "auto$")) {
-				mode = 0; start = 0;
-				for(uint8_t i = 0; i < STRING_SIZE; i++) string[i] = 0;
-			}
-
-			if (strstr(string, "manual$")) {
-				mode = 1; start = 0;
-				for(uint8_t i = 0; i < STRING_SIZE; i++) string[i] = 0;
-			}
 
 			if (mode) {
 				if (get_pwm_value) {
@@ -190,15 +191,14 @@ void proccesDmaData(uint8_t* sign, uint16_t len)
 					}
 
 					if (it2 == 2 && *(sign+i) != '$') {
-						start = 0; get_pwm_value = 0;
+						start = 0; get_pwm_value = 0; it2 = 0;
 						for(uint8_t i = 0; i < STRING_SIZE; i++) string[i] = 0;
 						for(uint8_t i = 0; i < 3; i++) pwm_string[i] = 0;
 					}
 
 					if (it2 == 2 && *(sign+i) == '$') {
 						sscanf(pwm_string, "%d", &pwm_value);
-//						setDutyCycle(pwm_value);
-						start = 0; get_pwm_value = 0;
+						start = 0; get_pwm_value = 0; it2 = 0; it = 0;
 						for(uint8_t i = 0; i < STRING_SIZE; i++) string[i] = 0;
 						for(uint8_t i = 0; i < 3; i++) pwm_string[i] = 0;
 					}
@@ -206,20 +206,22 @@ void proccesDmaData(uint8_t* sign, uint16_t len)
 					if (*(sign+i) >= 0 && *(sign+i) <= 9) pwm_string[it2++] = *(sign+i);
 				}
 
-				if (strstr(string, "PWM")) get_pwm_value = 1;
+				if (strstr(string, "$PWM")) get_pwm_value = 1;
 
 			}
 		}
 
-		else for (uint8_t i = 0; i < STRING_SIZE; i++) string[i] = 0;
+		else {
+			for (uint8_t i = 0; i < STRING_SIZE; i++) string[i] = 0;
+			it = 0;
+		}
 	}
 
 }
 
 void setDutyCycle(uint8_t D)
 {
-	uint8_t DutyCycle = D;
-	uint8_t pulse_length = ((TIM2->ARR) * DutyCycle) / 100;
+	uint8_t pulse_length = ((TIM2->ARR) * D) / 100;
 	TIM2->CCR1 = pulse_length;
 }
 

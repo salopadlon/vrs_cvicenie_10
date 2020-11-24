@@ -42,9 +42,8 @@
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
-/* USER CODE BEGIN EM */
-
-/* USER CODE END EM */
+#define MAX_VALUE 100
+#define MIN_VALUE 0
 
 /* Exported functions prototypes ---------------------------------------------*/
 void NMI_Handler(void);
