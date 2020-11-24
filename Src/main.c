@@ -195,6 +195,7 @@ void proccesDmaData(uint8_t* sign, uint16_t len)
 
 				if (it2 == 2 && *(sign+i) == '$') {
 					sscanf(pwm_string, "%d", &pwm_value);
+					setDutyCycle(pwm_value);
 					start = 0; get_pwm_value = 0;
 					for(uint8_t i = 0; i < STRING_SIZE; i++) string[i] = 0;
 					for(uint8_t i = 0; i < 3; i++) pwm_string[i] = 0;
